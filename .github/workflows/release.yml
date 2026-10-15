@@ -1,0 +1,49 @@
+# Builds the plugin from source when you publish a GitHub release, signs build
+# provenance (artifact attestations) and attaches main.js, manifest.json and styles.css.
+# Usage: bump "version" in manifest.json + versions.json, commit, then create a release
+# whose tag is exactly that version (e.g. 2.0.1). Don't upload files — this does it.
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write       # upload release assets
+  id-token: write       # sign the attestation
+  attestations: write   # store the attestation
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build
+        run: python3 build.py
+
+      - name: Check tag matches manifest version
+        run: |
+          v=$(python3 -c "import json;print(json.load(open('manifest.json'))['version'])")
+          if [ "$v" != "${{ github.event.release.tag_name }}" ]; then
+            echo "Tag ${{ github.event.release.tag_name }} does not match manifest version $v"; exit 1
+          fi
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            dist/main.js
+            dist/styles.css
+            dist/manifest.json
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/main.js dist/styles.css dist/manifest.json --clobber
