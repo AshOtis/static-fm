@@ -10,8 +10,15 @@
   container-type: inline-size;
 }
 .sfa *, .sfa *::before, .sfa *::after { box-sizing: border-box; }
-.sfa [hidden] { display: none !important; }
-.sfa button { all: unset; cursor: pointer; box-sizing: border-box; -moz-appearance: none; appearance: none; }
+.sfa [hidden], .sfa .sfa-card [hidden] { display: none; }
+.sfa button {
+  /* explicit reset (host apps style buttons heavily) */
+  -moz-appearance: none; -webkit-appearance: none; appearance: none;
+  display: inline-block; box-sizing: border-box; width: auto; height: auto; min-height: 0; margin: 0; padding: 0;
+  background: none; border: 0; border-radius: 0; box-shadow: none; outline: none;
+  color: inherit; font: inherit; line-height: inherit; letter-spacing: inherit; text-align: inherit; text-transform: none;
+  cursor: pointer;
+}
 .sfa button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 .sfa button[disabled] { opacity: .4; pointer-events: none; }
 
@@ -23,7 +30,9 @@
   background: var(--sfa-c, #b45309); opacity: var(--sfa-o, .3); transition: background 1.5s linear;
 }
 
-.sfa-scroll { position: relative; height: 100%; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; scrollbar-color: rgba(241,229,216,.2) transparent; }
+.sfa-scroll { position: relative; height: 100%; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 12px; }
+.sfa-scroll::-webkit-scrollbar { width: 6px; }
+.sfa-scroll::-webkit-scrollbar-thumb { background: rgba(241,229,216,.2); border-radius: 3px; }
 
 /* Header */
 .sfa-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 0 2px; }
