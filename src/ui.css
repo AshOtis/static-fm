@@ -1,0 +1,126 @@
+/* Static FM 2 — "Aurora". System font, no bundled assets. */
+
+.sfa {
+  --ink: #f1e5d8; --soft: #cdbba8; --dim: #9c8a78;
+  --amber: #ffb95c; --on-amber: #3d2400; --tonal: #5c3b10; --on-tonal: #ffdcb5;
+  --glass: rgba(30, 23, 18, .66); --line: rgba(241, 229, 216, .12); --track: rgba(241, 229, 216, .18);
+  position: relative; overflow: hidden; isolation: isolate;
+  background: #120e0b; color: var(--ink); color-scheme: dark;
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  container-type: inline-size;
+}
+.sfa *, .sfa *::before, .sfa *::after { box-sizing: border-box; }
+.sfa [hidden] { display: none !important; }
+.sfa button { all: unset; cursor: pointer; box-sizing: border-box; -moz-appearance: none; appearance: none; }
+.sfa button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.sfa button[disabled] { opacity: .4; pointer-events: none; }
+
+/* Aurora */
+.sfa-sky { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.sfa-glow {
+  position: absolute; left: 0; top: 0; border-radius: 50%; filter: blur(70px); will-change: transform;
+  width: 400px; height: 400px; transform: translate(var(--sfa-x, 0), var(--sfa-y, 0)) scale(var(--sfa-k, 1));
+  background: var(--sfa-c, #b45309); opacity: var(--sfa-o, .3); transition: background 1.5s linear;
+}
+
+.sfa-scroll { position: relative; height: 100%; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; scrollbar-color: rgba(241,229,216,.2) transparent; }
+
+/* Header */
+.sfa-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 0 2px; }
+.sfa-title { font-size: 17px; font-weight: 600; white-space: nowrap; }
+.sfa-sub { font-size: 12px; color: var(--soft); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Transport row: play/stop · frequency · pulse · mute */
+.sfa-bar { display: flex; align-items: center; gap: 12px; padding: 14px 2px 8px; }
+.sfa-now { flex: 1; min-width: 0; }
+.sfa-freq { display: flex; align-items: baseline; gap: 4px; }
+.sfa-freq span { font-size: 36px; line-height: 1; font-weight: 400; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.sfa-freq small { font-size: 12px; color: var(--soft); }
+.sfa:not(.is-on) .sfa-freq span { color: var(--soft); }
+.sfa-colour { font-size: 12px; color: var(--soft); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Round glass buttons */
+.sfa .sfa-fab, .sfa .sfa-icon {
+  flex: none; display: grid; place-items: center; border-radius: 50%;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  background: rgba(255,255,255,.06); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(241,229,216,.1);
+  transition: background .25s, color .25s, box-shadow .25s;
+}
+.sfa .sfa-fab { width: 56px; height: 56px; background: rgba(255,185,92,.16); color: var(--amber); box-shadow: inset 0 0 0 1px rgba(255,185,92,.16), 0 4px 18px rgba(0,0,0,.25); }
+.sfa .sfa-fab:hover { background: rgba(255,185,92,.24); }
+.sfa .sfa-icon { width: 40px; height: 40px; }
+.sfa .sfa-icon:hover { background: rgba(255,255,255,.11); }
+.sfa .sfa-icon.on { background: rgba(255,185,92,.16); color: var(--amber); box-shadow: inset 0 0 0 1px rgba(255,185,92,.16); }
+
+/* Glass cards */
+.sfa-card { background: var(--glass); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.sfa-sleep { flex-direction: row; align-items: center; gap: 12px; padding: 12px 14px; }
+.sfa-sleep h2 { margin: 0; font-size: 14px; font-weight: 500; flex: none; }
+.sfa-sleep .sfa-seg { flex: 1; }
+.sfa-card-head { display: flex; align-items: center; gap: 10px; min-height: 32px; }
+.sfa-card-head h2 { margin: 0; font-size: 14px; font-weight: 500; }
+.sfa-card-head > :last-child { margin-left: auto; }
+.sfa-head-val { font-size: 12px; color: var(--amber); }
+.sfa-help { margin: 0; font-size: 12px; color: var(--soft); }
+
+/* Sliders — 4 px line, 18 px handle centred on it (Firefox and Chromium) */
+.sfa-slider { display: flex; flex-direction: column; gap: 4px; }
+.sfa-slider-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--soft); }
+.sfa-val { color: var(--ink); font-variant-numeric: tabular-nums; }
+.sfa .sfa-range {
+  --pct: 50%;
+  -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 4px; margin: 7px 0; padding: 0; border: 0; border-radius: 2px; outline: none; cursor: pointer;
+  background: linear-gradient(to right, var(--amber) var(--pct), var(--track) var(--pct));
+}
+.sfa .sfa-range::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--amber); border: 0; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+.sfa .sfa-range::-moz-range-track { height: 4px; border-radius: 2px; background: transparent; border: 0; }
+.sfa .sfa-range::-moz-range-progress { height: 4px; border-radius: 2px; background: transparent; }
+.sfa .sfa-range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--amber); border: 0; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+.sfa .sfa-range:focus-visible::-moz-range-thumb { outline: 2px solid var(--ink); }
+.sfa .sfa-rainbow { background: linear-gradient(to right, #3b82f6, #10b981 16.67%, #9ca3af 33.33%, #e5e5e5 50%, #ec4899 66.67%, #f97316 83.33%, #b45309); }
+.sfa .sfa-rainbow::-webkit-slider-thumb, .sfa .sfa-rainbow::-moz-range-thumb { background: #fff3e6; }
+
+/* Colour swatches, lined up above the colour slider */
+.sfa-swatches { display: flex; justify-content: space-between; margin: 0 -8px; }
+.sfa .sfa-swatch { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 34px; font-size: 10px; color: var(--dim); }
+.sfa-swatch i { width: 12px; height: 12px; border-radius: 50%; }
+.sfa-c0 { background: #3b82f6; } .sfa-c1 { background: #10b981; } .sfa-c2 { background: #9ca3af; } .sfa-c3 { background: #e5e5e5; }
+.sfa-c4 { background: #ec4899; } .sfa-c5 { background: #f97316; } .sfa-c6 { background: #b45309; }
+.sfa .sfa-swatch.on { color: var(--ink); }
+.sfa .sfa-swatch.on i { box-shadow: 0 0 0 2px #1e1712, 0 0 0 3.5px var(--ink); }
+
+/* Switch */
+.sfa .sfa-switch { position: relative; flex: none; width: 44px; height: 26px; border-radius: 13px; background: rgba(255,255,255,.1); border: 2px solid rgba(241,229,216,.35); transition: all .2s; }
+.sfa-switch i { position: absolute; top: 4px; left: 4px; width: 14px; height: 14px; border-radius: 50%; background: rgba(241,229,216,.6); transition: all .2s; }
+.sfa .sfa-switch.on { background: var(--amber); border-color: var(--amber); }
+.sfa .sfa-switch.on i { left: 20px; top: 2px; width: 18px; height: 18px; background: var(--on-amber); }
+
+/* Chips + segmented */
+.sfa-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.sfa .sfa-chip { padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); color: var(--soft); font-size: 12px; }
+.sfa .sfa-chip.on { background: var(--tonal); border-color: transparent; color: var(--on-tonal); }
+.sfa-seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.sfa .sfa-seg button { flex: 1; text-align: center; height: 30px; line-height: 30px; font-size: 12px; color: var(--soft); border-left: 1px solid var(--line); }
+.sfa .sfa-seg button:first-child { border-left: 0; }
+.sfa .sfa-seg button.on { background: var(--tonal); color: var(--on-tonal); }
+
+/* Footer */
+.sfa-foot { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; margin-top: auto; padding-top: 2px; }
+.sfa .sfa-link { font-size: 12px; color: var(--dim); padding: 6px 2px; }
+.sfa .sfa-link:hover { color: var(--amber); }
+
+@container (max-width: 300px) {
+  .sfa-scroll { padding: 14px 10px; }
+  .sfa-freq span { font-size: 28px; }
+  .sfa-bar { gap: 8px; }
+  .sfa .sfa-fab { width: 46px; height: 46px; }
+  .sfa .sfa-icon { width: 34px; height: 34px; }
+  .sfa-sleep { flex-wrap: wrap; }
+  .sfa-sleep .sfa-seg { flex-basis: 100%; }
+  .sfa .sfa-swatch { width: 28px; font-size: 0; gap: 0; }
+  .sfa-card { padding: 12px; }
+}
+
+/* Keep host themes (e.g. Obsidian light themes) from restyling our headings */
+.sfa .sfa-card h2 { color: var(--ink); font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.3; letter-spacing: normal; margin: 0; padding: 0; border: 0; text-transform: none; }
+.sfa .sfa-title, .sfa .sfa-freq span { color: var(--ink); }

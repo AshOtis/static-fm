@@ -1,0 +1,8 @@
+/* Obsidian host */
+.workspace-leaf-content[data-type="static-fm-view"] .view-content.sfm-host { padding: 0; overflow: hidden; }
+.sfm-host > .sfa { height: 100%; }
+.sfm-status { cursor: pointer; font-variant-numeric: tabular-nums; }
+.sfm-status.sfm-hidden { display: none; }
+
+/* Obsidian's status bar floats over the bottom of the sidebar: keep the footer clear of it */
+.sfm-host .sfa-scroll { padding-bottom: 44px; }

@@ -1,0 +1,11 @@
+{
+  "id": "static-fm",
+  "name": "Static FM",
+  "version": "2.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Play seven-colour stereo noise with binaural tones, an adjustable pulse and a sleep timer in your sidebar.",
+  "author": "AshOtis",
+  "authorUrl": "https://github.com/AshOtis",
+  "isDesktopOnly": true,
+  "fundingUrl": "https://buymeacoffee.com/ashotis"
+}
