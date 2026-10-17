@@ -13,6 +13,8 @@ Static FM tunes between seven colours of noise (blue, green, grey, white, pink, 
 - **Binaural tones:** Delta (2 Hz), Theta (6 Hz), Alpha (10 Hz), Beta (18 Hz), Gamma (40 Hz) or Custom (beat 0.5–40 Hz, tone 60–500 Hz), with a mix level. Use headphones.
 - **Sleep timer:** 15, 30, 60 or 90 minutes, fading out gently at the end.
 - **Status bar:** shows the frequency, beat and time left while playing. Click it to stop.
+- **Static Aurora theme:** with the [Static Aurora](https://github.com/AshOtis/static-aurora) theme installed, the theme's glows take on the colours of your noise when you press play. They stay when you pause. Turn this off in settings with **Colour the Static Aurora theme**.
+- **Takes turns:** pressing play pauses my other players (Aurora MP3, Hi-Fi Tuner), and they stop Static FM. Turn on **Play alongside other players** to mix them.
 - **Commands:** start/stop, pulse, mute, binaural on/off, each preset and each timer. Assign your own hotkeys in **Settings → Hotkeys**.
 
 ## Usage

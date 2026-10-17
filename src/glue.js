@@ -31,7 +31,7 @@ class StaticFMPlugin extends Plugin {
         if (!SFM_WORKLET_URL) SFM_WORKLET_URL = URL.createObjectURL(new Blob([SFM_WORKLET_SRC], { type: 'application/javascript' }));
         return SFM_WORKLET_URL;
       },
-      onChange: () => this.updateStatus()
+      onChange: () => { this.updateStatus(); this.announcePlay(); }
     });
     await this.engine.init();
 
@@ -57,9 +57,57 @@ class StaticFMPlugin extends Plugin {
     for (const [id, name, cb] of cmds) this.addCommand({ id, name, callback: cb });
 
     this.addSettingTab(new SFMSettingTab(this.app, this));
+
+    // One player at a time: when another AshOtis player starts, stop (unless allowed to play together)
+    this.registerEvent(this.app.workspace.on('ashotis:playing', src => {
+      if (src !== 'static-fm' && this.engine.playing && this.engine.d.playTogether !== true) this.engine.stop();
+    }));
+
+    // Share the noise colours with the Static Aurora theme (or any theme that reads these variables)
+    this.registerInterval(window.setInterval(() => this.syncTheme(), 1000));
+  }
+
+  // Writes the theme colours only when they change (colour slider, pulse drifting into a new shade).
+  // Every write makes Obsidian restyle the whole window, so writes are rounded and kept rare.
+  syncTheme() {
+    const body = document.body, e = this.engine, vars = ['--sa-c1', '--sa-c2', '--sa-c3'];
+    const on = e.d.themeSync !== false && e.playing && !e.d.muted;
+    if (!on) {
+      // paused or stopped: keep the last colours on the theme; only clear when syncing is switched off
+      if (e.d.themeSync === false && this.synced) { delete body.dataset.saOwner; for (const v of vars) body.style.removeProperty(v); this.synced = false; this.syncKey = ''; }
+      return;
+    }
+    if (!this.mayColourTheme('static-fm')) return;
+    const C = [[59, 130, 246], [16, 185, 129], [156, 163, 175], [229, 229, 229], [236, 72, 153], [249, 115, 22], [180, 83, 9]];
+    const mix = Math.round(e.live / 4) * 4 / 100;   // round to steps of 4 so tiny pulse movements don't trigger a write
+    const w = C.map((_, c) => { const d = Math.abs(mix - c / 6) / 0.25; return d < 1 ? Math.cos(d * Math.PI / 2) : 0; });
+    const order = w.map((v, i) => [v, i]).sort((a, z) => z[0] - a[0]);
+    const rgb = (c, f = 1) => `rgb(${Math.round(c[0] * f)}, ${Math.round(c[1] * f)}, ${Math.round(c[2] * f)})`;
+    const first = C[order[0][1]], second = order[1][0] > 0 ? C[order[1][1]] : first, third = order[2][0] > 0 ? C[order[2][1]] : second;
+    const vals = [rgb(first), rgb(second), rgb(third, 0.7)], key = vals.join('|');
+    if (key === this.syncKey && this.synced) return;
+    vals.forEach((v, i) => body.style.setProperty(vars[i], v));
+    this.syncKey = key; this.synced = true;
+  }
+
+  announcePlay() {
+    const now = this.engine.playing;
+    if (now && !this.wasPlaying) this.app.workspace.trigger('ashotis:playing', 'static-fm');
+    this.wasPlaying = now;
+  }
+
+  // Only one plugin colours the theme at a time: whoever started first keeps it until they stop
+  mayColourTheme(me) {
+    const o = (document.body.dataset.saOwner || '').split(':');
+    if (o[0] && o[0] !== me && Date.now() - Number(o[1]) < 3000) { this.synced = false; return false; }
+    if (o[0] !== me) this.synced = false;   // taking over from another player: repaint
+    document.body.dataset.saOwner = me + ':' + Date.now();
+    return true;
   }
 
   onunload() {
+    if ((document.body.dataset.saOwner || '').startsWith(this.manifest.id + ':')) delete document.body.dataset.saOwner;
+    for (const v of ['--sa-c1', '--sa-c2', '--sa-c3']) document.body.style.removeProperty(v);
     clearTimeout(this.saveTimer);
     this.saveData(this.engine.d);
     this.engine.destroy();
@@ -99,6 +147,12 @@ class SFMSettingTab extends PluginSettingTab {
     new Setting(containerEl).setName('Background motion')
       .setDesc('Slowly drifting colour glows. Turn off for a still background.')
       .addToggle(t => t.setValue(e.d.motion).onChange(v => e.set('motion', v)));
+    new Setting(containerEl).setName('Colour the Static Aurora theme')
+      .setDesc('While Static FM plays, the Static Aurora theme glows in the colours of your noise. Has no effect with other themes.')
+      .addToggle(t => t.setValue(e.d.themeSync !== false).onChange(v => { e.d.themeSync = v; e.save(); this.plugin.syncTheme(); }));
+    new Setting(containerEl).setName('Play alongside other players')
+      .setDesc('Off: starting Aurora MP3, Hi-Fi Tuner or MFP Player stops Static FM, and the other way round. On: keep the noise playing under your music.')
+      .addToggle(t => t.setValue(e.d.playTogether === true).onChange(v => { e.d.playTogether = v; e.save(); }));
     new Setting(containerEl).setName('Show in status bar')
       .setDesc('Frequency, binaural beat and timer while playing. Click it to stop.')
       .addToggle(t => t.setValue(e.d.statusBar !== false).onChange(v => { e.d.statusBar = v; e.save(); this.plugin.updateStatus(); }));
