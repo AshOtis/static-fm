@@ -93,6 +93,7 @@ class StaticFMPlugin extends Plugin {
   announcePlay() {
     const now = this.engine.playing;
     if (now && !this.wasPlaying) this.app.workspace.trigger('ashotis:playing', 'static-fm');
+    if (!now && this.wasPlaying) this.app.workspace.trigger('ashotis:stopped', 'static-fm');
     this.wasPlaying = now;
   }
 
