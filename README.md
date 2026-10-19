@@ -39,7 +39,7 @@ The plugin has no dependencies. `src/` holds the readable source, and `python3 b
 
 ## Support
 
-If Static FM helps you focus or sleep, you can [buy me a coffee](https://buymeacoffee.com/ashotis). Questions or problems: open an issue, or email Hello@utilitiz.net.
+If Static FM helps you focus or sleep, you can [buy me a coffee](https://buymeacoffee.com/ashotis). Found a bug or have an idea? [Open an issue](https://github.com/AshOtis/static-fm/issues). It's the best way to reach me, and every report gets read.
 
 ## License
 
