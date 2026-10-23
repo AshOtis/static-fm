@@ -43,4 +43,4 @@ If Static FM helps you focus or sleep, you can [buy me a coffee](https://buymeac
 
 ## License
 
-[PolyForm Noncommercial 1.0.0](LICENSE) © AshOtis: free for personal and other noncommercial use; selling it or using it commercially needs my permission. Versions before this change were released under MIT.
+[GNU AGPL v3 or later](LICENSE) © AshOtis
